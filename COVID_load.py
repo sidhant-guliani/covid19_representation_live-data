@@ -23,9 +23,9 @@ import numpy as np
 from datetime import datetime,timedelta
 
 
-confirmed_data = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv'
-deaths_data = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv'
-recovered_data = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv'
+confirmed_data = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'
+deaths_data = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv'
+recovered_data = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'
 
 confirmed_fixes_dict = {'Italy|2020-03-12': 15113,
                         'Spain|2020-03-12': 3146,
@@ -103,7 +103,10 @@ def load(covid_id, wanted_countries):
 
         # getting rid of the record which has zero cases
         cases_percountry[country] = cou[cou > 0]
-        datesformat = [datetime.strptime(da, '%m/%d/%y') for da in cases_percountry[country].index]
+        if covid_id =='Recovered':
+            datesformat = [datetime.strptime(da, '%m/%d/%Y') for da in cases_percountry[country].index]
+        else:
+            datesformat = [datetime.strptime(da, '%m/%d/%y') for da in cases_percountry[country].index]
         df_dict[country] = pd.DataFrame(cases_percountry[country], columns=['Cases'], index=datesformat)
         df_dict[country]['DayCount'] = np.arange(1,cases_percountry[country].shape[0]+1)
         
