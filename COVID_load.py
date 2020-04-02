@@ -95,18 +95,13 @@ def load(covid_id, wanted_countries):
     cases_percountry = {}
     df_dict = {}
     for country in countries_list:
-
         # CHECK THE INDEX SLICE EXAMPLE ABOVE. WE ARE DOIGN THIS TO GET ALL THE DATA FOR THE COUNTRY WE ARE LOOKING FOR
         # we are doing sum for the total number of cases in a country, eg: in canada we have 12 rows for wach province
         # but we want to see for whole canada
         cou = corona_cases_df.loc[pd.IndexSlice[:, country], :].sum()
-
         # getting rid of the record which has zero cases
         cases_percountry[country] = cou[cou > 0]
-        if covid_id =='Recovered':
-            datesformat = [datetime.strptime(da, '%m/%d/%Y') for da in cases_percountry[country].index]
-        else:
-            datesformat = [datetime.strptime(da, '%m/%d/%y') for da in cases_percountry[country].index]
+        datesformat = [datetime.strptime(da, '%m/%d/%y') for da in cases_percountry[country].index]
         df_dict[country] = pd.DataFrame(cases_percountry[country], columns=['Cases'], index=datesformat)
         df_dict[country]['DayCount'] = np.arange(1,cases_percountry[country].shape[0]+1)
         
